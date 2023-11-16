@@ -1,6 +1,33 @@
 #include <bits/stdc++.h>
-
 using namespace std;
+
+vector<int> computeLPS(string& pattern) {
+    int m = pattern.size();
+    vector<int> lps(m, 0);
+    int len = 0;
+    int i = 1;
+
+    while (i < m) {
+        
+        if (pattern[i] == pattern[len]) {
+
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len != 0) {
+                
+                len = lps[len - 1];
+            } else {
+
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
+}
 
 int main(void) {
 
@@ -14,17 +41,33 @@ int main(void) {
     
     cin >> str >> pattern;
 
-    const int patlen = pattern.size();
+    const int n = str.size();
+    const int m = pattern.size();
 
-    if(patlen > str.size()) {
-        cout << 0;
-        return 0;
-    }
+    vector<int> lps = computeLPS(pattern);
 
-    for(int i = 0; i <= str.size() - patlen; i++) {
+    int i = 0;
+    int j = 0;
 
-        if(pattern == str.substr(i, patlen))
+    while (i < n) {
+
+        if (pattern[j] == str[i]) {
+            
+            i++;
+            j++;
+        }
+
+        if (j == m) {
+
             count++;
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] != str[i]) {
+ 
+            if (j != 0)
+                j = lps[j - 1];
+            else
+                i++;
+        }
     }
 
     cout << count;
